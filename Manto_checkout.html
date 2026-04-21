@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MANTO — Finalizar Pedido</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --green:#0D1B0F; --green-mid:#1C3A20; --gold:#C8A84B; --gold-light:#E8D08B;
+  --cream:#F5F0E8; --white:#fff; --gray:#F2F2F2; --text:#1a1a1a; --muted:#666;
+  --error:#e55; --success:#2e7d32;
+}
+/* RESET E BASE */  
+<!--ola -->
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--gray); min-height:100vh; }
+
+/* NAV */
+.checkout-nav {
+  background:var(--green); padding:0 40px; height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:100;
+}
+.nav-logo { font-family:'Bebas Neue',sans-serif; font-size:26px; color:#fff; letter-spacing:6px; }
+.nav-logo span { color:var(--gold); }
+.nav-steps { display:flex; gap:0; }
+.nav-step { font-size:10px; letter-spacing:3px; text-transform:uppercase; padding:6px 16px; color:#ffffff44; position:relative; }
+.nav-step.active { color:var(--gold); }
+.nav-step.done { color:#ffffff66; }
+.nav-step-dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:currentColor; margin-right:8px; vertical-align:middle; }
+.back-btn { color:#ffffff55; font-size:12px; letter-spacing:2px; text-transform:uppercase; background:none; border:none; cursor:pointer; transition:color .2s; text-decoration:none; display:flex; align-items:center; gap:8px; }
+.back-btn:hover { color:var(--gold); }
+
+/* LAYOUT */
+.checkout-wrap { max-width:1100px; margin:0 auto; padding:40px 20px; display:grid; grid-template-columns:1fr 420px; gap:32px; }
+@media(max-width:900px) { .checkout-wrap { grid-template-columns:1fr; } .order-summary { order:-1; } }
+
+/* FORMS */
+.checkout-card { background:var(--white); padding:36px; margin-bottom:20px; }
+.card-title { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--green); letter-spacing:3px; margin-bottom:24px; display:flex; align-items:center; gap:12px; }
+.card-title-num { width:28px; height:28px; background:var(--green); color:var(--gold); font-size:14px; display:flex; align-items:center; justify-content:center; border-radius:50%; flex-shrink:0; }
+
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.form-group { display:flex; flex-direction:column; gap:6px; }
+.form-group.full { grid-column:1/-1; }
+.form-label { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
+.form-input, .form-select {
+  padding:12px 14px; border:1px solid #e0e0e0;
+  font-family:'DM Sans',sans-serif; font-size:15px; color:var(--text);
+  background:var(--white); transition:border .2s; outline:none; border-radius:0;
+  -webkit-appearance:none;
+}
+.form-input:focus, .form-select:focus { border-color:var(--green); }
+.form-input.error { border-color:var(--error); }
+.form-error { font-size:11px; color:var(--error); margin-top:2px; display:none; }
+.form-error.show { display:block; }
+
+/* PAYMENT TABS */
+.payment-tabs { display:flex; gap:0; margin-bottom:24px; border:1px solid #e0e0e0; }
+.pay-tab { flex:1; padding:14px 8px; border:none; background:none; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); transition:all .2s; display:flex; flex-direction:column; align-items:center; gap:6px; border-right:1px solid #e0e0e0; }
+.pay-tab:last-child { border-right:none; }
+.pay-tab.active { background:var(--green); color:var(--gold); }
+.pay-tab-icon { font-size:20px; }
+.pay-content { display:none; }
+.pay-content.active { display:block; }
+
+/* STRIPE ELEMENT */
+#stripe-element { padding:16px; border:1px solid #e0e0e0; min-height:60px; transition:border .2s; }
+#stripe-element:focus-within { border-color:var(--green); }
+
+/* PIX */
+.pix-info { background:#f0fdf4; border:1px solid #86efac; padding:20px; margin-bottom:16px; }
+.pix-info-title { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--success); letter-spacing:2px; margin-bottom:8px; }
+.pix-info-text { font-size:14px; color:var(--success); line-height:1.6; }
+.pix-steps { display:flex; flex-direction:column; gap:10px; margin-top:12px; }
+.pix-step { display:flex; gap:12px; align-items:flex-start; }
+.pix-step-num { width:22px; height:22px; background:var(--success); color:#fff; border-radius:50%; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.pix-step-text { font-size:13px; color:#2e7d32; }
+
+/* BOLETO */
+.boleto-info { background:#fffbf0; border:1px solid #fcd34d; padding:20px; margin-bottom:16px; }
+.boleto-info-title { font-family:'Bebas Neue',sans-serif; font-size:18px; color:#92400e; letter-spacing:2px; margin-bottom:8px; }
+.boleto-info-text { font-size:14px; color:#92400e; line-height:1.6; }
+
+/* ORDER SUMMARY */
+.order-summary { background:var(--white); padding:36px; position:sticky; top:84px; align-self:start; }
+.summary-title { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--green); letter-spacing:3px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--gray); }
+.summary-items { display:flex; flex-direction:column; gap:16px; margin-bottom:20px; }
+.summary-item { display:flex; gap:14px; align-items:center; }
+.summary-item-img { width:56px; height:56px; border-radius:2px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.summary-item-info { flex:1; }
+.summary-item-name { font-size:14px; font-weight:500; color:var(--green); margin-bottom:2px; }
+.summary-item-qty { font-size:12px; color:var(--muted); }
+.summary-item-price { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--gold); }
+.summary-divider { height:1px; background:var(--gray); margin:16px 0; }
+.summary-row { display:flex; justify-content:space-between; font-size:14px; color:var(--muted); margin-bottom:8px; }
+.summary-row.total { font-size:16px; font-weight:500; color:var(--text); margin-top:8px; }
+.summary-row.total span:last-child { font-family:'Bebas Neue',sans-serif; font-size:24px; color:var(--green); }
+.minimum-ok { background:#f0fdf4; border:1px solid #86efac; padding:10px 14px; font-size:12px; color:var(--success); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.minimum-warn { background:#fff5f5; border:1px solid #fca5a5; padding:10px 14px; font-size:12px; color:var(--error); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.security-badges { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; padding-top:16px; border-top:1px solid var(--gray); }
+.badge { font-size:10px; letter-spacing:1px; color:var(--muted); display:flex; align-items:center; gap:4px; }
+
+/* SUBMIT */
+.submit-btn {
+  width:100%; background:var(--gold); color:var(--green);
+  font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:5px;
+  padding:18px; border:none; cursor:pointer; transition:all .3s;
+  margin-top:24px; position:relative; overflow:hidden;
+}
+.submit-btn:hover:not(:disabled) { background:var(--gold-light); }
+.submit-btn:disabled { opacity:.5; cursor:not-allowed; }
+.submit-btn .btn-loading { display:none; }
+.submit-btn.loading .btn-text { display:none; }
+.submit-btn.loading .btn-loading { display:inline; }
+
+/* SUCCESS PAGE */
+.success-page { display:none; min-height:100vh; background:var(--green); align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:60px 20px; }
+.success-page.show { display:flex; }
+.success-icon { width:80px; height:80px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 28px; animation:successPop .5s cubic-bezier(.23,1,.32,1); }
+@keyframes successPop { from{transform:scale(0)} to{transform:scale(1)} }
+.success-icon::after { content:'✓'; font-size:36px; color:var(--green); font-weight:700; }
+.success-logo { font-family:'Bebas Neue',sans-serif; font-size:48px; color:#fff; letter-spacing:8px; margin-bottom:8px; }
+.success-tagline { color:var(--gold); font-size:11px; letter-spacing:5px; text-transform:uppercase; margin-bottom:36px; opacity:.8; }
+.success-title { font-family:'Bebas Neue',sans-serif; font-size:52px; color:#fff; letter-spacing:4px; margin-bottom:16px; line-height:.9; }
+.success-title span { color:var(--gold); }
+.success-sub { color:#ffffff88; font-size:16px; font-weight:300; line-height:1.7; max-width:480px; margin-bottom:40px; }
+.success-order { background:#ffffff11; border:1px solid #C8A84B33; padding:20px 32px; margin-bottom:36px; }
+.success-order-num { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--gold); letter-spacing:4px; }
+.success-order-label { color:#ffffff55; font-size:11px; letter-spacing:3px; text-transform:uppercase; margin-top:4px; }
+.success-steps { display:flex; gap:32px; flex-wrap:wrap; justify-content:center; margin-bottom:40px; }
+.success-step { text-align:center; max-width:140px; }
+.success-step-icon { font-size:28px; margin-bottom:8px; }
+.success-step-text { color:#ffffff88; font-size:13px; line-height:1.5; }
+.success-btn { background:var(--gold); color:var(--green); font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:4px; padding:16px 40px; border:none; cursor:pointer; transition:all .2s; }
+.success-btn:hover { background:var(--gold-light); }
+
+/* EMPTY CART PAGE */
+.empty-page { display:none; min-height:100vh; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:60px; }
+.empty-page.show { display:flex; }
+
+/* UTIL */
+.stripe-powered { text-align:center; margin-top:12px; font-size:11px; color:#aaa; letter-spacing:1px; }
+.field-hint { font-size:11px; color:#aaa; margin-top:4px; }
+
+/* PIX MODAL */
+.pix-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:500; display:none; align-items:center; justify-content:center; padding:20px; }
+.pix-modal-overlay.open { display:flex; }
+.pix-modal { background:#fff; width:100%; max-width:420px; overflow:hidden; }
+.pix-modal-header { background:var(--green); padding:20px 24px; display:flex; justify-content:space-between; align-items:center; }
+.pix-modal-title { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#fff; letter-spacing:4px; }
+.pix-modal-close { background:none; border:none; color:#ffffff88; font-size:22px; cursor:pointer; }
+.pix-modal-body { padding:28px 24px; text-align:center; }
+.pix-qr-wrap { width:200px; height:200px; margin:0 auto 20px; border:2px solid #e0e0e0; display:flex; align-items:center; justify-content:center; }
+.pix-amount { font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--green); letter-spacing:2px; margin-bottom:4px; }
+.pix-amount-label { font-size:12px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-bottom:20px; }
+.pix-copy-wrap { display:flex; gap:8px; margin-bottom:16px; }
+.pix-copy-input { flex:1; padding:10px 12px; border:1px solid #e0e0e0; font-size:12px; color:var(--muted); background:#f9f9f9; font-family:monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pix-copy-btn { background:var(--green); color:var(--gold); border:none; padding:10px 16px; font-size:11px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; white-space:nowrap; transition:all .2s; }
+.pix-copy-btn:hover { background:var(--green-mid); }
+.pix-copied { color:var(--success); font-size:12px; margin-bottom:12px; display:none; }
+.pix-copied.show { display:block; }
+.pix-instructions { font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:20px; }
+.pix-expire { font-size:11px; color:#e55; letter-spacing:1px; }
+.pix-confirm-btn { width:100%; background:var(--gold); color:var(--green); font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:4px; padding:14px; border:none; cursor:pointer; transition:all .2s; }
+.pix-confirm-btn:hover { background:var(--gold-light); }
+
+/* RESPONSIVE CHECKOUT */
+@media(max-width:900px) {
+  .checkout-wrap { grid-template-columns:1fr; padding:20px 16px; }
+  .order-summary { position:static; }
+  .checkout-nav { padding:0 16px; }
+  .checkout-nav .nav-steps { display:none; }
+  .checkout-card { padding:24px 16px; }
+  .form-grid { grid-template-columns:1fr; }
+  .form-group.full { grid-column:1; }
+}
+@media(max-width:480px) {
+  .payment-tabs { flex-wrap:wrap; }
+  .pay-tab { min-width:33%; }
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+<!-- SUCCESS PAGE -->
+<div class="success-page" id="successPage">
+  <div class="success-icon"></div>
+  <div class="success-logo">MANTO</div>
+  <div class="success-tagline">atacado · copa 2026</div>
+  <h2 class="success-title">PEDIDO<br><span>CONFIRMADO!</span></h2>
+  <p class="success-sub">Seu pedido foi recebido e está sendo processado. Você receberá o código de rastreamento por e-mail assim que o pagamento for confirmado.</p>
+  <div class="success-order">
+    <div class="success-order-num" id="successOrderNum">#MTN-000000</div>
+    <div class="success-order-label">número do pedido</div>
+  </div>
+  <div class="success-steps">
+    <div class="success-step"><div class="success-step-icon">✅</div><div class="success-step-text">Pedido confirmado</div></div>
+    <div class="success-step"><div class="success-step-icon">🏭</div><div class="success-step-text">Produção separada</div></div>
+    <div class="success-step"><div class="success-step-icon">📦</div><div class="success-step-text">Despacho em 24h</div></div>
+    <div class="success-step"><div class="success-step-icon">🚚</div><div class="success-step-text">Entrega em até 8 dias</div></div>
+  </div>
+  <button class="success-btn" onclick="window.location.href='MANTO_Site_Funcional.html'">Voltar à loja</button>
+</div>
+
+<!-- EMPTY CART -->
+<div class="empty-page" id="emptyPage">
+  <div style="font-size:64px;margin-bottom:20px;opacity:.3">📦</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--green);letter-spacing:4px;margin-bottom:12px">Carrinho vazio</div>
+  <div style="color:var(--muted);margin-bottom:32px">Adicione produtos ao carrinho antes de finalizar.</div>
+  <a href="MANTO_Site_Funcional.html" class="submit-btn" style="width:auto;display:inline-block;text-decoration:none;text-align:center;padding:16px 40px">← Voltar ao catálogo</a>
+</div>
+
+<!-- PIX MODAL -->
+<div class="pix-modal-overlay" id="pixModalOverlay">
+  <div class="pix-modal">
+    <div class="pix-modal-header">
+      <div class="pix-modal-title">⚡ PAGAR COM PIX</div>
+      <button class="pix-modal-close" onclick="closePixModal()">✕</button>
+    </div>
+    <div class="pix-modal-body">
+      <div class="pix-amount" id="pixAmount">R$0</div>
+      <div class="pix-amount-label">valor do pedido</div>
+      <div class="pix-qr-wrap" id="pixQrCode"></div>
+      <div class="pix-copy-wrap">
+        <input class="pix-copy-input" id="pixCopyInput" readonly value="">
+        <button class="pix-copy-btn" onclick="copyPixKey()">Copiar chave</button>
+      </div>
+      <div class="pix-copied" id="pixCopied">✅ Chave copiada!</div>
+      <div class="pix-instructions">
+        Abra o app do seu banco → Pix → Copia e Cola<br>
+        ou escaneie o QR Code acima.
+      </div>
+      <div class="pix-expire">⏱ Pague em até 30 minutos</div>
+      <br>
+      <button class="pix-confirm-btn" onclick="confirmPixPayment()">JÁ PAGUEI — CONFIRMAR PEDIDO</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT MAIN -->
+<div id="checkoutMain">
+
+<!-- NAV -->
+<nav class="checkout-nav">
+  <div class="nav-logo">MANTO <span>·</span></div>
+  <div class="nav-steps">
+    <div class="nav-step done"><span class="nav-step-dot"></span>Carrinho</div>
+    <div class="nav-step active"><span class="nav-step-dot"></span>Checkout</div>
+    <div class="nav-step"><span class="nav-step-dot"></span>Confirmação</div>
+  </div>
+  <a href="MANTO_Site_Funcional.html" class="back-btn">← Voltar</a>
+</nav>
+
+<div class="checkout-wrap">
+
+  <!-- FORMULÁRIOS -->
+  <div class="checkout-left">
+
+    <!-- DADOS PESSOAIS -->
+    <div class="checkout-card">
+      <div class="card-title">
+        <div class="card-title-num">1</div>
+        Dados do Lojista
+      </div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label class="form-label">Nome completo *</label>
+          <input type="text" class="form-input" id="fNome" placeholder="Seu nome completo">
+          <span class="form-error" id="errNome">Campo obrigatório</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail *</label>
+          <input type="email" class="form-input" id="fEmail" placeholder="seu@email.com">
+          <span class="form-error" id="errEmail">E-mail inválido</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">CPF ou CNPJ *</label>
+          <input type="text" class="form-input" id="fDoc" placeholder="000.000.000-00" maxlength="18">
+          <span class="form-error" id="errDoc">Campo obrigatório</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefone / WhatsApp</label>
+          <input type="tel" class="form-input" id="fTel" placeholder="(00) 00000-0000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nome da loja / empresa</label>
+          <input type="text" class="form-input" id="fLoja" placeholder="Nome da sua loja">
+        </div>
+      </div>
+    </div>
+
+    <!-- ENDEREÇO -->
+    <div class="checkout-card">
+      <div class="card-title">
+        <div class="card-title-num">2</div>
+        Endereço de Entrega
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">CEP *</label>
+          <input type="text" class="form-input" id="fCep" placeholder="00000-000" maxlength="9" oninput="buscaCep(this)">
+          <span class="form-error" id="errCep">CEP inválido</span>
+          <span class="field-hint" id="cepHint"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado</label>
+          <input type="text" class="form-input" id="fEstado" placeholder="UF" maxlength="2" readonly>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Rua / Logradouro *</label>
+          <input type="text" class="form-input" id="fRua" placeholder="Rua, Avenida...">
+          <span class="form-error" id="errRua">Campo obrigatório</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Número *</label>
+          <input type="text" class="form-input" id="fNum" placeholder="123">
+          <span class="form-error" id="errNum">Campo obrigatório</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Complemento</label>
+          <input type="text" class="form-input" id="fComp" placeholder="Apto, sala...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bairro *</label>
+          <input type="text" class="form-input" id="fBairro" placeholder="Bairro">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cidade *</label>
+          <input type="text" class="form-input" id="fCidade" placeholder="Cidade">
+        </div>
+      </div>
+      <div id="deliveryEstimate" style="margin-top:16px;padding:12px 16px;background:var(--cream);font-size:13px;color:var(--muted);display:none">
+        📦 <span id="deliveryText"></span>
+      </div>
+    </div>
+
+    <!-- PAGAMENTO -->
+    <div class="checkout-card">
+      <div class="card-title">
+        <div class="card-title-num">3</div>
+        Forma de Pagamento
+      </div>
+
+      <div class="payment-tabs">
+        <button class="pay-tab active" onclick="selectPay('pix',this)">
+          <div class="pay-tab-icon">⚡</div>
+          PIX
+        </button>
+        <button class="pay-tab" onclick="selectPay('boleto',this)">
+          <div class="pay-tab-icon">📄</div>
+          Boleto
+        </button>
+        <button class="pay-tab" onclick="selectPay('card',this)">
+          <div class="pay-tab-icon">💳</div>
+          Cartão
+        </button>
+      </div>
+
+      <!-- PIX — QR Code gerado no checkout -->
+      <div class="pay-content active" id="pay-pix">
+        <div class="pix-info">
+          <div class="pix-info-title">⚡ PIX — Aprovação imediata</div>
+          <div class="pix-info-text">Ao confirmar, um QR Code PIX será gerado aqui mesmo. Pague pelo app do banco sem sair desta página.</div>
+          <div class="pix-steps">
+            <div class="pix-step"><div class="pix-step-num">1</div><div class="pix-step-text">Clique em confirmar pedido</div></div>
+            <div class="pix-step"><div class="pix-step-num">2</div><div class="pix-step-text">QR Code aparece aqui mesmo na página</div></div>
+            <div class="pix-step"><div class="pix-step-num">3</div><div class="pix-step-text">Escaneie e pague — confirmação instantânea</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOLETO -->
+      <div class="pay-content" id="pay-boleto">
+        <div class="boleto-info">
+          <div class="boleto-info-title">📄 Boleto Bancário</div>
+          <div class="boleto-info-text">Vencimento em 3 dias úteis. O pedido será confirmado após compensação do pagamento (1 dia útil).</div>
+        </div>
+        <div id="stripe-element-boleto"></div>
+      </div>
+
+      <!-- CARTÃO -->
+      <div class="pay-content" id="pay-card">
+        <div class="form-group" style="margin-bottom:16px">
+          <label class="form-label">Nome no cartão</label>
+          <input type="text" class="form-input" id="fCardName" placeholder="Como está no cartão">
+        </div>
+        <div id="stripe-element-card" style="padding:14px;border:1px solid #e0e0e0;"></div>
+        <span class="form-error" id="errCard"></span>
+      </div>
+
+    </div>
+
+    <!-- OBSERVAÇÕES -->
+    <div class="checkout-card">
+      <div class="card-title" style="font-size:18px">
+        <div class="card-title-num" style="background:var(--cream);color:var(--green)">+</div>
+        Observações (opcional)
+      </div>
+      <div class="form-group full">
+        <textarea class="form-input" id="fObs" rows="3" placeholder="Grade específica, cores preferidas, instruções de entrega..."></textarea>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="processPayment()">
+      <span class="btn-text">🔒 CONFIRMAR PEDIDO</span>
+      <span class="btn-loading">⏳ PROCESSANDO...</span>
+    </button>
+    <div class="stripe-powered">🔒 Pagamento seguro · PIX via InfinitPay · Cartão e Boleto via Stripe</div>
+    <div id="paymentError" style="color:var(--error);font-size:13px;text-align:center;margin-top:12px;display:none"></div>
+
+  </div>
+
+  <!-- RESUMO DO PEDIDO -->
+  <div class="order-summary">
+    <div class="summary-title">Resumo do Pedido</div>
+    <div class="summary-items" id="summaryItems"></div>
+    <div class="summary-divider"></div>
+    <div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">R$0</span></div>
+    <div class="summary-row"><span>Frete</span><span style="color:var(--muted)" id="summaryFrete">Calculado pelo CEP</span></div>
+    <div class="summary-row total"><span>Total</span><span id="summaryTotal">R$0</span></div>
+    <div id="minimumStatus" style="margin-top:16px"></div>
+    <div class="security-badges">
+      <div class="badge">🔒 SSL seguro</div>
+      <div class="badge">⚡ PIX InfinitPay</div>
+      <div class="badge">✅ Stripe</div>
+      <div class="badge">📦 Rastreamento</div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /checkoutMain -->
+
+<script>
+// ============================================================
+// CONFIGURAÇÃO — Chave Stripe 
+// ============================================================
+const STRIPE_KEY = 'pk_test_EXEMPLO1234567890abcdefg';
+
+const API_URL = 'https://manto-serven.onrender.com/api';
+
+let MIN_ORDER = 600; // atualizado pelo servidor
+
+// ============================================================
+// CORES PARA PREVIEW
+// ============================================================
+const JERSEY_COLORS = {
+  amarela:'linear-gradient(135deg,#F5D000,#D4A000)',
+  azul:'linear-gradient(135deg,#003087,#001540)',
+  verde:'linear-gradient(135deg,#1C5C2E,#082A12)',
+  branca:'linear-gradient(135deg,#F8F8F8,#E5E5E5)',
+  preta:'linear-gradient(135deg,#1a1a1a,#050505)',
+  degrade:'linear-gradient(135deg,#F5D000,#F5A800)',
+};
+
+// ============================================================
+// ESTADO
+// ============================================================
+let cart     = JSON.parse(localStorage.getItem('manto_cart') || '[]');
+let products = [];
+let stripe, cardElement, currentPayMethod = 'pix';
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = async function() {
+  if (!cart.length) {
+    document.getElementById('checkoutMain').style.display = 'none';
+    document.getElementById('emptyPage').classList.add('show');
+    return;
+  }
+  // Carrega produtos e config do servidor
+  try {
+    const [prods, cfg] = await Promise.all([
+      fetch(API_URL + '/products').then(r=>r.json()),
+      fetch(API_URL + '/config').then(r=>r.json()),
+    ]);
+    products = prods;
+    MIN_ORDER = cfg.minOrder || 600;
+  } catch(e) {
+    console.warn('Usando dados locais:', e.message);
+    products = JSON.parse(localStorage.getItem('manto_products') || '[]');
+  }
+  renderSummary();
+  initStripe();
+};
+
+// ============================================================
+// STRIPE INIT
+// ============================================================
+function initStripe() {
+  if (STRIPE_KEY.includes('EXEMPLO')) {
+    // Modo demo — sem Stripe real
+    console.log('⚠️ Stripe em modo demo. Configure STRIPE_KEY.');
+    return;
+  }
+  stripe = Stripe(STRIPE_KEY);
+  const elements = stripe.elements({ locale: 'pt-BR' });
+  cardElement = elements.create('card', {
+    style: {
+      base: { fontFamily:'DM Sans,sans-serif', fontSize:'16px', color:'#1a1a1a', '::placeholder':{color:'#aaa'} },
+      invalid: { color:'#e55' }
+    }
+  });
+  cardElement.mount('#stripe-element-card');
+  cardElement.on('change', e => {
+    const err = document.getElementById('errCard');
+    err.textContent = e.error ? e.error.message : '';
+    err.classList.toggle('show', !!e.error);
+  });
+}
+
+// ============================================================
+// RENDER SUMMARY
+// ============================================================
+function renderSummary() {
+  const itemsEl = document.getElementById('summaryItems');
+  let total = 0;
+  itemsEl.innerHTML = cart.map(item => {
+    const p = products.find(x => x.id === item.id);
+    if (!p) return '';
+    const sub = p.price * item.qty;
+    total += sub;
+    return `<div class="summary-item">
+      <div class="summary-item-img" style="background:${JERSEY_COLORS[p.cor]||'#F5F0E8'}"></div>
+      <div class="summary-item-info">
+        <div class="summary-item-name">${p.name}</div>
+        <div class="summary-item-qty">${item.qty} unidades × R$${p.price}</div>
+      </div>
+      <div class="summary-item-price">R$${sub.toLocaleString('pt-BR')}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('summarySubtotal').textContent = `R$${total.toLocaleString('pt-BR')}`;
+  document.getElementById('summaryTotal').textContent    = `R$${total.toLocaleString('pt-BR')}`;
+  const minEl = document.getElementById('minimumStatus');
+  if (total >= MIN_ORDER) {
+    minEl.innerHTML = `<div class="minimum-ok">✅ Pedido mínimo atingido (R$${MIN_ORDER})</div>`;
+  } else {
+    minEl.innerHTML = `<div class="minimum-warn">⚠️ Mínimo de R$${MIN_ORDER} não atingido (faltam R$${(MIN_ORDER-total).toLocaleString('pt-BR')})</div>`;
+    document.getElementById('submitBtn').disabled = true;
+  }
+}
+
+// ============================================================
+// CEP AUTOMÁTICO
+// ============================================================
+async function buscaCep(input) {
+  let v = input.value.replace(/\D/g,'');
+  if (v.length > 5) input.value = v.slice(0,5) + '-' + v.slice(5,8);
+  if (v.length !== 8) return;
+  document.getElementById('cepHint').textContent = 'Buscando CEP...';
+  try {
+    const r = await fetch(`https://viacep.com.br/ws/${v}/json/`);
+    const d = await r.json();
+    if (d.erro) { document.getElementById('cepHint').textContent = 'CEP não encontrado.'; return; }
+    document.getElementById('fRua').value    = d.logradouro || '';
+    document.getElementById('fBairro').value = d.bairro || '';
+    document.getElementById('fCidade').value = d.localidade || '';
+    document.getElementById('fEstado').value  = d.uf || '';
+    document.getElementById('cepHint').textContent = '✅ Endereço encontrado!';
+    estimateDelivery(d.uf);
+  } catch(e) { document.getElementById('cepHint').textContent = 'Erro ao buscar CEP.'; }
+}
+
+function estimateDelivery(uf) {
+  const north  = ['AM','PA','AC','RO','RR','AP','TO'];
+  const ne     = ['MA','PI','CE','RN','PB','PE','AL','SE','BA'];
+  const co     = ['MT','MS','GO','DF'];
+  const se     = ['SP','RJ','ES','MG'];
+  const south  = ['PR','SC','RS'];
+  let dias = '';
+  if (north.includes(uf) || ne.includes(uf)) dias = '5 a 8 dias úteis';
+  else if (co.includes(uf)) dias = '4 a 6 dias úteis';
+  else if (se.includes(uf) || south.includes(uf)) dias = '3 a 5 dias úteis';
+  else dias = '5 a 8 dias úteis';
+  document.getElementById('deliveryText').textContent = `Previsão de entrega: ${dias} após confirmação do pagamento`;
+  document.getElementById('deliveryEstimate').style.display = 'block';
+}
+
+// ============================================================
+// MÁSCARA CPF/CNPJ
+// ============================================================
+document.getElementById('fDoc').addEventListener('input', function() {
+  let v = this.value.replace(/\D/g,'');
+  if (v.length <= 11) {
+    v = v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  } else {
+    v = v.replace(/(\d{2})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1/$2').replace(/(\d{4})(\d{1,2})$/,'$1-$2');
+  }
+  this.value = v;
+});
+document.getElementById('fTel').addEventListener('input', function() {
+  let v = this.value.replace(/\D/g,'');
+  v = v.replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');
+  this.value = v;
+});
+
+// ============================================================
+// SELEÇÃO DE PAGAMENTO
+// ============================================================
+function selectPay(method, btn) {
+  currentPayMethod = method;
+  document.querySelectorAll('.pay-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.pay-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pay-' + method).classList.add('active');
+}
+
+// ============================================================
+// VALIDAÇÃO
+// ============================================================
+function validate() {
+  let ok = true;
+  const required = [
+    { id:'fNome',   err:'errNome',   msg:'Nome obrigatório' },
+    { id:'fEmail',  err:'errEmail',  msg:'E-mail inválido' },
+    { id:'fDoc',    err:'errDoc',    msg:'CPF/CNPJ obrigatório' },
+    { id:'fCep',    err:'errCep',    msg:'CEP obrigatório' },
+    { id:'fRua',    err:'errRua',    msg:'Rua obrigatória' },
+    { id:'fNum',    err:'errNum',    msg:'Número obrigatório' },
+  ];
+  required.forEach(f => {
+    const el  = document.getElementById(f.id);
+    const err = document.getElementById(f.err);
+    if (!el.value.trim()) {
+      el.classList.add('error');
+      err.textContent = f.msg;
+      err.classList.add('show');
+      ok = false;
+    } else {
+      el.classList.remove('error');
+      err.classList.remove('show');
+    }
+  });
+  // email format
+  const email = document.getElementById('fEmail');
+  if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    email.classList.add('error');
+    document.getElementById('errEmail').classList.add('show');
+    ok = false;
+  }
+  return ok;
+}
+
+// ============================================================
+// PROCESSAR PAGAMENTO
+// ============================================================
+async function processPayment() {
+  if (!validate()) {
+    document.querySelector('.form-input.error')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+
+  const btn   = document.getElementById('submitBtn');
+  const errEl = document.getElementById('paymentError');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  errEl.style.display = 'none';
+
+  const customer = {
+    name:  document.getElementById('fNome').value,
+    email: document.getElementById('fEmail').value,
+    doc:   document.getElementById('fDoc').value,
+    phone: document.getElementById('fTel').value,
+    store: document.getElementById('fLoja').value,
+  };
+  const address = {
+    cep:    document.getElementById('fCep').value,
+    rua:    document.getElementById('fRua').value,
+    num:    document.getElementById('fNum').value,
+    comp:   document.getElementById('fComp').value,
+    bairro: document.getElementById('fBairro').value,
+    cidade: document.getElementById('fCidade').value,
+    estado: document.getElementById('fEstado').value,
+  };
+
+  const total = cart.reduce((a,item) => {
+    const p = products.find(x=>x.id===item.id);
+    return a + (p ? p.price * item.qty : 0);
+  }, 0);
+  const amountCents = Math.round(total * 100);
+
+  // MODO DEMO
+  if (STRIPE_KEY.includes('EXEMPLO')) {
+    await new Promise(r=>setTimeout(r,2000));
+    finishSuccess('#MTN-'+Math.floor(Math.random()*900000+100000));
+    return;
+  }
+
+  try {
+    // ---- PIX — QR Code nativo ----
+    if (currentPayMethod === 'pix') {
+      openPixModal(total);
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      return;
+    }
+
+    // ---- Cartão e Boleto via Stripe ----
+    const res = await fetch(`${API_URL}/create-payment-intent`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ amount:amountCents, currency:'brl', method:currentPayMethod, customer }),
+    });
+    const data = await res.json();
+    if (!data.clientSecret) throw new Error(data.error||'Erro ao criar pagamento');
+
+    let result;
+    if (currentPayMethod === 'card') {
+      result = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: { card:cardElement, billing_details:{ name:customer.name, email:customer.email } }
+      });
+    } else {
+      result = await stripe.confirmBoletoPayment(data.clientSecret, {
+        payment_method: {
+          boleto: { tax_id: customer.doc.replace(/\D/g,'') },
+          billing_details: { name:customer.name, email:customer.email, address:{ line1:`${address.rua}, ${address.num}`, city:address.cidade, state:address.estado, postal_code:address.cep.replace(/\D/g,''), country:'BR' } }
+        }
+      });
+    }
+
+    if (result.error) throw new Error(result.error.message);
+    cart = []; localStorage.setItem('manto_cart','[]');
+    finishSuccess('#MTN-' + data.orderId);
+
+  } catch(err) {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    errEl.textContent = '❌ ' + (err.message || 'Erro ao processar pagamento. Tente novamente.');
+    errEl.style.display = 'block';
+  }
+}
+
+function finishSuccess(orderNum) {
+  document.getElementById('checkoutMain').style.display = 'none';
+  document.getElementById('successPage').classList.add('show');
+  document.getElementById('successOrderNum').textContent = orderNum;
+  window.scrollTo(0,0);
+}
+
+// ============================================================
+// PIX MODAL — QR Code nativo
+// ============================================================
+let currentPixOrderNum = null;
+
+function gerarPayloadPix(chavePix, valor, txid) {
+  // Gera payload PIX padrão EMV seguindo especificação do Banco Central
+  function tamanho(v) { return v.length.toString().padStart(2,'0'); }
+  function campo(id, v) { return id + tamanho(v) + v; }
+
+  const pixKey   = campo('01', chavePix);
+  const gui      = campo('00', 'BR.GOV.BCB.PIX');
+  const infoPix  = campo('26', gui + pixKey);
+  const moeda    = campo('53', '986');
+  const valorStr = campo('54', valor.toFixed(2));
+  const pais     = campo('58', 'BR');
+  const nome     = campo('59', 'MANTO ATACADO');
+  const cidade   = campo('60', 'BRASIL');
+  const refLabel = campo('62', campo('05', txid.slice(0,25)));
+
+  const semCRC = '000201' + infoPix + moeda + valorStr + pais + nome + cidade + refLabel + '6304';
+
+  // Calcula CRC16
+  function crc16(str) {
+    let crc = 0xFFFF;
+    for (let i = 0; i < str.length; i++) {
+      crc ^= str.charCodeAt(i) << 8;
+      for (let j = 0; j < 8; j++) {
+        crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+      }
+    }
+    return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4,'0');
+  }
+
+  return semCRC + crc16(semCRC);
+}
+
+function openPixModal(total) {
+  const orderNum = 'MTN' + Date.now();
+  currentPixOrderNum = orderNum;
+
+  const chavePix = 'atacadomanto@gmail.com';
+  const payload  = gerarPayloadPix(chavePix, total, orderNum);
+
+  // Preenche modal
+  document.getElementById('pixAmount').textContent = 'R$' + total.toLocaleString('pt-BR', {minimumFractionDigits:2});
+  document.getElementById('pixCopyInput').value = payload;
+
+  // Gera QR Code
+  const qrWrap = document.getElementById('pixQrCode');
+  qrWrap.innerHTML = '';
+  new QRCode(qrWrap, { text:payload, width:180, height:180, correctLevel:QRCode.CorrectLevel.M });
+
+  document.getElementById('pixCopied').classList.remove('show');
+  document.getElementById('pixModalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePixModal() {
+  document.getElementById('pixModalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function copyPixKey() {
+  const input = document.getElementById('pixCopyInput');
+  input.select();
+  navigator.clipboard.writeText(input.value).catch(()=>{
+    document.execCommand('copy');
+  });
+  document.getElementById('pixCopied').classList.add('show');
+  setTimeout(()=>document.getElementById('pixCopied').classList.remove('show'), 3000);
+}
+
+function confirmPixPayment() {
+  closePixModal();
+  cart = []; localStorage.setItem('manto_cart','[]');
+  finishSuccess(currentPixOrderNum || ('#MTN-'+Math.floor(Math.random()*900000+100000)));
+}
+</script>
+</body>
+</html>
