@@ -1,0 +1,4 @@
+# NUNCA suba esses arquivos para o GitHub
+.env
+*.env
+node_modules/
