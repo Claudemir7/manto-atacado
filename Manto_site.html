@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MANTO — Atacado Copa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="manto_styles.css">
+</head>
+<body>
+<!-- ===== EXPERIÊNCIA SONORA MANTO ===== -->
+
+<style>
+#audio-player {
+  position: fixed;
+  bottom: 6%;
+  right: 12px;
+  background: #085a04;
+  color: #fff;
+  padding: 5px;
+  border-radius: 7px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 5px 20px rgba(45, 98, 2, 0.5);
+  z-index: 9999;
+  font-family: Arial, sans-serif;
+}
+
+#audio-player button {
+  background: #fff;
+  color: #034708;
+  border: none;
+  padding: 1px 4px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Estilo da barra */
+#audio-player input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: #fff;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+#audio-player input[type=range] {
+  width: 100px;
+}
+
+#audio-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(2, 98, 14, 0.85);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  font-family: Arial, sans-serif;
+}
+
+#audio-popup div {
+  text-align: center;
+  background: #111;
+  padding: 30px;
+  border-radius: 15px;
+}
+
+#audio-popup button {
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#accept {
+  background: #fff;
+  color: #084d00;
+}
+
+#decline {
+  background: #333;
+  color: #fff;
+}
+</style>
+
+<!-- POPUP -->
+<div id="audio-popup">
+  <div>
+    <h2>🎧 Ativar experiência sonora?</h2>
+    <p>Uma música leve para melhorar sua experiência na loja.</p>
+    <button id="accept">Sim</button>
+    <button id="decline">Não</button>
+  </div>
+</div>
+
+<!-- PLAYER -->
+<div id="audio-player">
+  <button id="playPause">▶</button>
+  <input type="range" id="volume" min="0" max="1" step="0.01">
+</div>
+
+<!-- ÁUDIO -->
+<audio id="audio" loop>
+  <source src="msc/Vintage Culture, Rooftime - I Will Find.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const audio = document.getElementById("audio");
+const popup = document.getElementById("audio-popup");
+const player = document.getElementById("audio-player");
+const playPause = document.getElementById("playPause");
+const volume = document.getElementById("volume");
+
+// Volume inicial
+audio.volume = 0.3;
+volume.value = 0.3;
+
+// Aceitar som
+document.getElementById("accept").onclick = () => {
+  audio.play();
+  popup.style.display = "none";
+  player.style.display = "flex";
+};
+
+// Recusar som
+document.getElementById("decline").onclick = () => {
+  popup.style.display = "none";
+};
+
+// Play / Pause
+playPause.onclick = () => {
+  if (audio.paused) {
+    audio.play();
+    playPause.innerText = "⏸";
+  } else {
+    audio.pause();
+    playPause.innerText = "▶";
+  }
+};
+
+// Volume
+volume.oninput = () => {
+  audio.volume = volume.value;
+};
+</script>
+<!-- ========== NAV ========== -->
+<nav>
+  <div class="nav-logo" id="navLogo" style="user-select:none">MANTO <span>·</span></div>
+  <div class="nav-links">
+    <a href="#catalogo">Catálogo</a>
+    <a href="#como">Como comprar</a>
+    <a href="#sobre">Sobre</a>
+    <a href="#condicoes">Condições</a>
+  </div>
+  <div class="nav-right">
+
+    <button class="cart-btn" onclick="openCart()">
+      Carrinho
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <button class="nav-cta" onclick="document.getElementById('catalogo').scrollIntoView({behavior:'smooth'})">Fazer pedido</button>
+  </div>
+</nav>
+
+<!-- ========== TICKER ========== -->
+<div class="ticker-section">
+  <div class="ticker-track">
+    <div class="ticker-item"><span class="ticker-text">Camisa Seleção Brasileira 2026</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Atacado para Lojistas</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Margem de até 128%</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Entrega para todo o Brasil</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Copa 2026 · Garanta seu estoque</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Fábrica Própria · Qualidade Garantida</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Pedido Mínimo R$600</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Camisa Seleção Brasileira 2026</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Atacado para Lojistas</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Margem de até 128%</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Entrega para todo o Brasil</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Copa 2026 · Garanta seu estoque</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Fábrica Própria · Qualidade Garantida</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">Pedido Mínimo R$600</span><span class="ticker-dot"></span></div>
+  </div>
+</div>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="home">
+  <div class="hero-bg-1"></div>
+  <div class="hero-bg-2"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">fornecedor oficial · copa 2026 · atacado</div>
+    <h1 class="hero-title">O MANTO<br>QUE O BRASIL<br><span class="gold">VAI USAR.</span></h1>
+    <div class="hero-line"></div>
+    <p class="hero-sub">Camisas e acessórios em atacado para lojistas. Fábrica própria, qualidade garantida, entrega para todo o Brasil.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="document.getElementById('catalogo').scrollIntoView({behavior:'smooth'})">Ver catálogo e fazer pedido</button>
+      <button class="btn-outline" onclick="document.getElementById('como').scrollIntoView({behavior:'smooth'})">Como funciona</button>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">128%</div><div class="stat-label">margem do lojista</div></div>
+    <div class="stat"><div class="stat-num">8 dias</div><div class="stat-label">entrega máxima</div></div>
+    <div class="stat"><div class="stat-num">R$600</div><div class="stat-label">pedido mínimo</div></div>
+  </div>
+</section>
+
+<!-- ========== CARROSSEL ========== -->
+<section class="carousel-section">
+  <div class="carousel-header">
+    <div class="carousel-eyebrow">coleção oficial</div>
+    <div class="carousel-title">CAMISAS <span>COPA</span> 2026</div>
+  </div>
+  <div class="carousel-track-wrap">
+    <div class="carousel-track" id="carouselTrack"></div>
+  </div>
+</section>
+
+<!-- ========== SPOTLIGHT ========== -->
+<section class="spotlight-section">
+  <div class="spotlight-bg-text">2026</div>
+  <div class="spotlight-grid">
+    <div>
+      <div class="spotlight-eyebrow">camisa em destaque</div>
+      <h2 class="spotlight-title">CAMISA<br>TITULAR<br><em>AMARELA</em></h2>
+      <div class="spotlight-line"></div>
+      <p class="spotlight-text">A mais procurada. A camisa amarela da Seleção para a Copa 2026 tem a maior saída garantida de toda a temporada.</p>
+      <div class="spotlight-specs">
+        <div class="spec-row"><div class="spec-check"></div><span class="spec-label">Tecido dry-fit respirável</span></div>
+        <div class="spec-row"><div class="spec-check"></div><span class="spec-label">Costura reforçada — não abre após lavagem</span></div>
+        <div class="spec-row"><div class="spec-check"></div><span class="spec-label">Cores vibrantes que não desbotam</span></div>
+        <div class="spec-row"><div class="spec-check"></div><span class="spec-label">Tamanhos P ao XGG</span></div>
+      </div>
+      <button class="btn-primary" onclick="addToCart('amarela-titular')">Adicionar à grade</button>
+    </div>
+    <div class="spotlight-right">
+      <div style="position:relative;width:280px;height:420px;display:flex;align-items:center;justify-content:center;">
+        <div class="jersey-floating">
+          <svg viewBox="0 0 220 260" fill="none" style="width:220px;height:260px;filter:drop-shadow(0 28px 56px rgba(0,0,0,.18))">
+            <path d="M82 11L60 33L20 50L32 92L60 81L60 232L160 232L160 81L188 92L200 50L158 33L136 11Q110 26 82 11Z" fill="#F5D000" stroke="#D4A000" stroke-width="2"/>
+            <path d="M82 11Q110 26 136 11L140 17Q110 33 80 17Z" fill="#1C5C2E"/>
+            <path d="M60 81L60 128Q84 136 110 136Q136 136 160 128L160 81Z" fill="#E8B800" opacity=".3"/>
+            <path d="M20 50L32 92L60 81L60 33Z" fill="#D4A000" opacity=".4"/>
+            <path d="M200 50L188 92L160 81L160 33Z" fill="#D4A000" opacity=".4"/>
+            <circle cx="110" cy="100" r="18" fill="none" stroke="#1C5C2E" stroke-width="2"/>
+            <text x="110" y="106" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="12" fill="#1C5C2E" letter-spacing="1">CBF</text>
+            <path d="M72 174L148 174" stroke="#D4A000" stroke-width=".8" opacity=".5"/>
+            <path d="M72 185L148 185" stroke="#D4A000" stroke-width=".8" opacity=".5"/>
+          </svg>
+        </div>
+        <div class="jersey-shadow"></div>
+        <div class="orbit-tag orbit-tag-1"><div class="orbit-dot orbit-dot-gold"></div><span class="orbit-label">Atacado R$29/un</span></div>
+        <div class="orbit-tag orbit-tag-2"><div class="orbit-dot orbit-dot-green"></div><span class="orbit-label">Margem 128%</span></div>
+        <div class="orbit-tag orbit-tag-3"><div class="orbit-dot orbit-dot-gold"></div><span class="orbit-label">Entrega garantida</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CATÁLOGO / PRODUTOS ========== -->
+<section class="produtos-section" id="catalogo">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">catálogo completo</div>
+      <div class="section-title">MONTE SUA GRADE</div>
+    </div>
+    <div class="pg-filter">
+      <button class="filter-btn active" onclick="filterProducts('todos',this)">Todas</button>
+      <button class="filter-btn" onclick="filterProducts('titular',this)">Titular</button>
+      <button class="filter-btn" onclick="filterProducts('reserva',this)">Reserva</button>
+      <button class="filter-btn" onclick="filterProducts('especial',this)">Especial</button>
+      <button class="filter-btn" onclick="filterProducts('kids',this)">Kids</button>
+      <button class="filter-btn" onclick="filterProducts('acessorio',this)">Acessórios</button>
+      <button class="filter-btn" onclick="filterProducts('kit',this)">Kits</button>
+    </div>
+  </div>
+  <div class="products-grid" id="productsGrid"></div>
+</section>
+
+<!-- ========== COMO FUNCIONA ========== -->
+<section class="como-section" id="como">
+  <div style="text-align:center;max-width:1100px;margin:0 auto;">
+    <div class="section-eyebrow" style="color:var(--gold)">passo a passo</div>
+    <div class="section-title white">COMO COMPRAR</div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="step-num">01</div><div class="step-title">Escolha a grade</div><div class="step-text">Acesse o catálogo, escolha os produtos e adicione ao carrinho.</div><div class="step-arrow">→</div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-title">Finalize o pedido</div><div class="step-text">Checkout via PIX ou boleto. Aprovação imediata no PIX.</div><div class="step-arrow">→</div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-title">Receba o rastreio</div><div class="step-text">Confirmado o pagamento, código de rastreamento por e-mail em até 24h.</div><div class="step-arrow">→</div></div>
+    <div class="step"><div class="step-num">04</div><div class="step-title">Venda e lucre</div><div class="step-text">Produto no seu estoque em até 8 dias úteis. Pronto para a Copa.</div></div>
+  </div>
+</section>
+
+<!-- ========== SOBRE ========== -->
+<section class="sobre-section" id="sobre">
+  <div class="sobre-inner">
+    <div class="sobre-visual">
+      <div class="sobre-visual-bg"></div>
+      <div class="sobre-logo">MANTO</div>
+      <div class="sobre-tagline">atacado · copa 2026</div>
+      <div class="sobre-line"></div>
+      <div class="sobre-stat-num">100%</div>
+      <div class="sobre-stat-label">focado no lojista</div>
+      <div class="sobre-stat-num">0</div>
+      <div class="sobre-stat-label">concorrência com você</div>
+    </div>
+    <div class="sobre-text">
+      <h2>POR QUE A<br>MANTO EXISTE</h2>
+      <p>A pergunta que nos fundou foi simples: <strong>por que é tão difícil achar um fornecedor de confecção confiável no Brasil?</strong></p>
+      <p>Produto sem qualidade. Prazo que não é respeitado. Preço sem margem. Decidimos mudar isso.</p>
+      <p>Somos um fornecedor focado <strong>100% no lojista brasileiro</strong>. Não vendemos no varejo. Não competimos com nossos clientes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONDIÇÕES ========== -->
+<section class="cond-section" id="condicoes">
+  <div class="cond-inner">
+    <div style="text-align:center;margin-bottom:16px">
+      <div class="section-eyebrow">transparência total</div>
+      <div class="section-title">CONDIÇÕES COMERCIAIS</div>
+    </div>
+    <div class="cond-grid">
+      <div class="cond-item"><div class="cond-icon">📦</div><div class="cond-title">Pedido Mínimo</div><div class="cond-text">Pedido mínimo de <span class="cond-highlight">R$600,00</span>. Todos os produtos vendidos em grade fechada.</div></div>
+      <div class="cond-item"><div class="cond-icon">💳</div><div class="cond-title">Pagamento</div><div class="cond-text"><span class="cond-highlight">PIX</span> (imediato) e <span class="cond-highlight">boleto</span> (1 dia útil). Pedido confirmado após pagamento.</div></div>
+      <div class="cond-item"><div class="cond-icon">🚚</div><div class="cond-title">Entrega</div><div class="cond-text">Sudeste/Sul: <span class="cond-highlight">3-5 dias</span>. Centro-Oeste: <span class="cond-highlight">4-6 dias</span>. Norte/NE: <span class="cond-highlight">5-8 dias</span> úteis.</div></div>
+      <div class="cond-item"><div class="cond-icon">🧾</div><div class="cond-title">Nota Fiscal</div><div class="cond-text">Nota fiscal em <span class="cond-highlight">todos os pedidos</span>, para PF ou PJ.</div></div>
+      <div class="cond-item"><div class="cond-icon">🔄</div><div class="cond-title">Devolução</div><div class="cond-text">Aceito em até <span class="cond-highlight">7 dias</span> após recebimento, defeito comprovado.</div></div>
+      <div class="cond-item"><div class="cond-icon">📍</div><div class="cond-title">Rastreamento</div><div class="cond-text"><span class="cond-highlight">100% dos pedidos</span> com rastreio por e-mail após despacho.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CTA ========== -->
+<section class="cta-banner">
+  <div class="cta-banner-bg"></div>
+  <div class="cta-content">
+    <div class="cta-eyebrow">copa 2026 · estoque disponível agora</div>
+    <h2 class="cta-title">MONTE SUA<br><span>GRADE HOJE.</span></h2>
+    <p class="cta-sub">Pedido mínimo R$600 · Entrega para todo o Brasil · Nota fiscal inclusa</p>
+    <button class="cta-btn-gold" onclick="document.getElementById('catalogo').scrollIntoView({behavior:'smooth'})">FAZER MEU PEDIDO AGORA</button>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="footer-inner">
+    <div><div class="footer-logo">MANTO</div><div class="footer-tagline">atacado · copa 2026 · brasil</div><div class="footer-desc">O fornecedor que o lojista brasileiro estava esperando.</div></div>
+    <div class="footer-col"><h4>Catálogo</h4><a href="#catalogo">Camisas Copa</a><a href="#catalogo">Acessórios</a><a href="#catalogo">Kits</a></div>
+    <div class="footer-col"><h4>Empresa</h4><a href="#sobre">Sobre a MANTO</a><a href="#condicoes">Condições</a></div>
+    <div class="footer-col"><h4>Contato</h4><p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7d0e080d120f09183d101c130912531e1210531f0f">[email&#160;protected]</a></p><p>@manto.atacado</p></div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 MANTO Atacado · Todos os direitos reservados</div>
+    <div class="footer-inst">@manto.atacado</div>
+  </div>
+</footer>
+
+<!-- ========== CART DRAWER ========== -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <div><div class="cart-header-title">Seu Carrinho</div><div style="color:#ffffff55;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-top:2px">Grade de Atacado</div></div>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-footer">
+    <div class="cart-subtotal">
+      <span class="cart-subtotal-label">Subtotal</span>
+      <span class="cart-subtotal-val" id="cartTotal">R$0</span>
+    </div>
+    <div class="cart-minimum" id="cartMinimum">Pedido mínimo de R$600 não atingido</div>
+    <button class="checkout-btn" id="checkoutBtn" onclick="goCheckout()" disabled>
+      FINALIZAR PEDIDO → CHECKOUT
+    </button>
+    <div style="text-align:center;margin-top:10px;font-size:11px;color:#aaa;letter-spacing:1px">
+      🔒 Checkout seguro · PIX e Boleto
+    </div>
+  </div>
+</div>
+
+<!-- ========== LOGIN ADMIN ========== -->
+<div id="loginOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:600;display:none;align-items:center;justify-content:center;">
+  <div style="background:#fff;width:380px;padding:0;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4);">
+    <div style="background:#0D1B0F;padding:32px 36px 24px;text-align:center;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#fff;letter-spacing:8px;">MANTO</div>
+      <div style="color:#C8A84B;font-size:10px;letter-spacing:5px;text-transform:uppercase;margin-top:4px;opacity:.8;">painel administrativo</div>
+    </div>
+    <div style="padding:32px 36px 36px;">
+      <div style="margin-bottom:16px;">
+        <label style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#666;display:block;margin-bottom:6px;">E-mail</label>
+        <input type="email" id="loginEmail" style="width:100%;padding:12px 14px;border:1px solid #e0e0e0;font-family:'DM Sans',sans-serif;font-size:15px;outline:none;" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div style="margin-bottom:8px;">
+        <label style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#666;display:block;margin-bottom:6px;">Senha</label>
+        <div style="position:relative;">
+          <input type="password" id="loginPass" style="width:100%;padding:12px 44px 12px 14px;border:1px solid #e0e0e0;font-family:'DM Sans',sans-serif;font-size:15px;outline:none;" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+          <button onclick="toggleLoginPass()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#aaa;font-size:16px;" id="loginPassEye">👁</button>
+        </div>
+      </div>
+      <div id="loginError" style="color:#e55;font-size:12px;margin-bottom:12px;display:none;">E-mail ou senha incorretos.</div>
+      <button onclick="doLogin()" style="width:100%;background:#C8A84B;color:#0D1B0F;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;padding:16px;border:none;cursor:pointer;margin-top:8px;transition:all .2s;" onmouseover="this.style.background='#E8D08B'" onmouseout="this.style.background='#C8A84B'">ENTRAR</button>
+      <button onclick="closeLogin()" style="width:100%;background:none;border:none;color:#aaa;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:12px;cursor:pointer;margin-top:8px;">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL FOTO PRODUTO ========== -->
+<div id="photoOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:700;display:none;align-items:center;justify-content:center;">
+  <div style="background:#fff;width:420px;padding:0;overflow:hidden;">
+    <div style="background:#0D1B0F;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;letter-spacing:3px;">TROCAR FOTO</div>
+      <button onclick="closePhotoModal()" style="background:none;border:none;color:#ffffff88;font-size:20px;cursor:pointer;">✕</button>
+    </div>
+    <div style="padding:28px;">
+      <div id="photoProductName" style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#0D1B0F;letter-spacing:2px;margin-bottom:20px;"></div>
+      <div id="photoPreviewWrap" style="width:100%;height:200px;border:2px dashed #e0e0e0;display:flex;align-items:center;justify-content:center;margin-bottom:20px;overflow:hidden;cursor:pointer;position:relative;" onclick="document.getElementById('photoFileInput').click()">
+        <div id="photoPreviewContent" style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="font-size:40px;">📷</div>
+          <div style="font-size:13px;color:#aaa;text-align:center;">Clique para selecionar uma foto<br><span style="font-size:11px">JPG, PNG — máx. 5MB</span></div>
+        </div>
+      </div>
+      <input type="file" id="photoFileInput" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+      <div style="display:flex;gap:12px;">
+        <button onclick="savePhoto()" id="savePhotoBtn" style="flex:1;background:#0D1B0F;color:#C8A84B;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;padding:14px;border:none;cursor:pointer;" disabled>SALVAR FOTO</button>
+        <button onclick="removePhoto()" style="background:none;border:1px solid #ffcccc;color:#e55;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:14px 16px;cursor:pointer;">Remover</button>
+      </div>
+      <div style="margin-top:12px;font-size:11px;color:#aaa;text-align:center;">A foto substitui o desenho da camisa no site e no carrinho.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL TAMANHOS CARRINHO ========== -->
+<div id="sizeOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:700;display:none;align-items:center;justify-content:center;">
+  <div style="background:#fff;width:440px;max-height:90vh;overflow-y:auto;">
+    <div style="background:#0D1B0F;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1;">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;letter-spacing:3px;">MONTAR GRADE</div>
+        <div style="color:#C8A84B;font-size:10px;letter-spacing:3px;text-transform:uppercase;opacity:.8;margin-top:2px;" id="sizeProductNameModal"></div>
+      </div>
+      <button onclick="closeSizeModal()" style="background:none;border:none;color:#ffffff88;font-size:20px;cursor:pointer;">✕</button>
+    </div>
+    <div style="padding:24px;">
+      <div id="sizeProductPreview" style="display:flex;align-items:center;gap:16px;padding:16px;background:#F5F0E8;margin-bottom:24px;">
+        <div id="sizeProductImg" style="width:56px;height:56px;border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
+        <div>
+          <div id="sizeProductNamePreview" style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#0D1B0F;letter-spacing:2px;"></div>
+          <div id="sizeProductPrice" style="font-size:13px;color:#C8A84B;margin-top:2px;"></div>
+        </div>
+      </div>
+      <div style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#666;margin-bottom:16px;">Quantidade por tamanho</div>
+      <div id="sizeInputsWrap" style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;"></div>
+      <div style="background:#F5F0E8;padding:14px 16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:13px;color:#666;">Total de peças</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#0D1B0F;" id="sizeTotalQty">0 peças</div>
+      </div>
+      <div style="background:#F5F0E8;padding:14px 16px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:13px;color:#666;">Subtotal desta grade</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#C8A84B;" id="sizeTotalValue">R$0</div>
+      </div>
+      <div id="sizeMinWarning" style="color:#e55;font-size:12px;margin-bottom:12px;display:none;"></div>
+      <button onclick="confirmSizeAdd()" id="confirmSizeBtn" style="width:100%;background:#C8A84B;color:#0D1B0F;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;padding:16px;border:none;cursor:pointer;">ADICIONAR À GRADE</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-header">
+    <div><div class="admin-header-title">Painel Admin</div><div class="admin-header-sub">MANTO · Gestão de Produtos</div></div>
+    <button class="admin-close" onclick="closeAdmin()">✕</button>
+  </div>
+  <div class="admin-body">
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('produtos',this)">Produtos</button>
+      <button class="admin-tab" onclick="switchTab('novo',this)">Novo Produto</button>
+      <button class="admin-tab" onclick="switchTab('config',this)">Configurações</button>
+    </div>
+
+    <!-- TAB: PRODUTOS -->
+    <div class="admin-tab-content active" id="tab-produtos">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="font-size:13px;color:var(--muted)" id="adminProdCount"></div>
+        <button class="btn-add-product" onclick="switchTab('novo',document.querySelectorAll('.admin-tab')[1])">+ Adicionar Produto</button>
+      </div>
+      <div class="admin-prod-list" id="adminProdList"></div>
+    </div>
+
+    <!-- TAB: NOVO / EDITAR -->
+    <div class="admin-tab-content" id="tab-novo">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);letter-spacing:2px;margin-bottom:20px" id="formTitle">Novo Produto</div>
+      <input type="hidden" id="editingId">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label class="form-label">Nome do produto *</label>
+          <input type="text" class="form-input" id="fName" placeholder="Ex: Camisa Titular Amarela Copa 2026">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Preço atacado (R$) *</label>
+          <input type="number" class="form-input" id="fPrice" placeholder="29" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Preço revenda sugerido (R$)</label>
+          <input type="number" class="form-input" id="fRevenda" placeholder="79" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Categoria</label>
+          <select class="form-select" id="fCategoria">
+            <option value="titular">Titular</option>
+            <option value="reserva">Reserva</option>
+            <option value="especial">Especial</option>
+            <option value="kids">Kids</option>
+            <option value="acessorio">Acessório</option>
+            <option value="kit">Kit</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cor da camisa</label>
+          <select class="form-select" id="fCor">
+            <option value="amarela">Amarela</option>
+            <option value="azul">Azul</option>
+            <option value="verde">Verde</option>
+            <option value="branca">Branca</option>
+            <option value="preta">Preta</option>
+            <option value="degrade">Degradê</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pedido mínimo (unidades)</label>
+          <input type="number" class="form-input" id="fMinimo" placeholder="10">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tamanhos disponíveis</label>
+          <input type="text" class="form-input" id="fTamanhos" placeholder="P, M, G, GG, XGG">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Descrição</label>
+          <textarea class="form-textarea" id="fDesc" placeholder="Descreva o produto, tecido, acabamento..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Badge (opcional)</label>
+          <input type="text" class="form-input" id="fBadge" placeholder="Ex: Mais vendido">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estoque disponível</label>
+          <input type="number" class="form-input" id="fEstoque" placeholder="100">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Foto do produto (opcional)</label>
+          <div id="fPhotoPreview" style="width:100%;height:120px;border:2px dashed #e0e0e0;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:8px;overflow:hidden;" onclick="document.getElementById('fPhotoInput').click()">
+            <span style="font-size:12px;color:#aaa;letter-spacing:1px;">Clique para adicionar foto — substitui o desenho</span>
+          </div>
+          <input type="file" id="fPhotoInput" accept="image/*" style="display:none" onchange="previewFormPhoto(this)">
+          <button type="button" onclick="clearFormPhoto()" style="background:none;border:1px solid #ffcccc;color:#e55;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;cursor:pointer;">Remover foto</button>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-save" onclick="saveProduct()">Salvar Produto</button>
+        <button class="btn-cancel" onclick="cancelEdit()">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- TAB: CONFIG -->
+    <div class="admin-tab-content" id="tab-config">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);letter-spacing:2px;margin-bottom:20px">Configurações da Loja</div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label class="form-label">Pedido mínimo (R$)</label>
+          <input type="number" class="form-input" id="cfgMinOrder" placeholder="600">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">URL do Checkout (cole aqui quando ativar)</label>
+          <input type="text" class="form-input" id="cfgCheckout" placeholder="https://seusite.com/checkout">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">WhatsApp de suporte (opcional)</label>
+          <input type="text" class="form-input" id="cfgWhatsapp" placeholder="5585999999999">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">E-mail de suporte</label>
+          <input type="text" class="form-input" id="cfgEmail" placeholder="suporte@manto.com.br">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-save" onclick="saveConfig()">Salvar Configurações</button>
+      </div>
+      <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--gray)">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase">Dados</div>
+        <button class="btn-cancel" onclick="exportData()" style="margin-right:8px">Exportar JSON</button>
+        <button class="btn-delete" onclick="resetData()">Resetar tudo</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== TOAST ========== -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const ADMIN_EMAIL = '';
+const ADMIN_PASS  = '';
+const API_BASE    = 'https://manto-serven.onrender.com/api';
+let adminLoggedIn = false;
+
+// ============================================================
+// ESTADO
+// ============================================================
+let products = [];
+let config   = { minOrder:600, checkout:'', whatsapp:'', email:'' };
+let cart     = JSON.parse(localStorage.getItem('manto_cart')||'[]');
+let currentFilter='todos', currentPhotoId=null, currentPhotoData=null, currentFormPhotoData=null, currentSizeProductId=null;
+
+function saveCart() {
+  localStorage.setItem('manto_cart', JSON.stringify(cart));
+}
+
+// ============================================================
+// API HELPERS
+// ============================================================
+async function apiGet(path) {
+  const r = await fetch(API_BASE + path);
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+async function apiPost(path, data) {
+  const r = await fetch(API_BASE + path, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+async function apiPut(path, data) {
+  const r = await fetch(API_BASE + path, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+async function apiDelete(path) {
+  const r = await fetch(API_BASE + path, { method:'DELETE' });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+// ============================================================
+// CARREGAR DADOS DO SERVIDOR
+// ============================================================
+async function loadAll() {
+  try {
+    [products, config] = await Promise.all([apiGet('/products'), apiGet('/config')]);
+    renderProducts();
+    renderCarousel();
+    renderCart();
+    updateCartCount();
+  } catch(e) {
+    console.error('Erro ao carregar dados:', e.message);
+    showToast('Erro ao carregar produtos. Verifique a conexão.');
+  }
+}
+
+// ============================================================
+// CORES
+// ============================================================
+const JERSEY_COLORS = {
+  amarela:{ bg:'linear-gradient(145deg,#F5D000,#D4A000)', gola:'#1C5C2E', cbf:'#1C5C2E', body:'#F5D000', manga:'#D4A000' },
+  azul:   { bg:'linear-gradient(145deg,#003087,#001540)', gola:'#F5D000', cbf:'#F5D000', body:'#003087', manga:'#001540' },
+  verde:  { bg:'linear-gradient(145deg,#1C5C2E,#082A12)', gola:'#F5D000', cbf:'#F5D000', body:'#1C5C2E', manga:'#0D3D1C' },
+  branca: { bg:'linear-gradient(145deg,#F8F8F8,#E5E5E5)', gola:'#003087', cbf:'#003087', body:'#F5F5F5', manga:'#E5E5E5' },
+  preta:  { bg:'linear-gradient(145deg,#1a1a1a,#050505)', gola:'#C8A84B', cbf:'#C8A84B', body:'#111111', manga:'#0d0d0d' },
+  degrade:{ bg:'linear-gradient(145deg,#F5D000,#F5A800)', gola:'#1C5C2E', cbf:'#1C5C2E', body:'url(#dg)', manga:'#D4900F' },
+};
+
+function jerseyPath(cor, size=160) {
+  const c = JERSEY_COLORS[cor]||JERSEY_COLORS.amarela;
+  const w=size, h=Math.round(size*1.1);
+  return `<svg viewBox="0 0 160 176" fill="none" style="width:${w}px;height:${h}px">
+    ${cor==='degrade'?'<defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F5D000"/><stop offset="100%" stop-color="#F5A800"/></linearGradient></defs>':''}
+    <path d="M60 8L44 24L16 36L24 64L44 56L44 160L116 160L116 56L136 64L144 36L116 24L100 8Q80 18 60 8Z" fill="${c.body}" stroke="${c.manga}" stroke-width="1.5"/>
+    <path d="M60 8Q80 18 100 8L102 12Q80 22 58 12Z" fill="${c.gola}"/>
+    <path d="M16 36L24 64L44 56L44 24Z" fill="${c.manga}" opacity=".4"/>
+    <path d="M144 36L136 64L116 56L116 24Z" fill="${c.manga}" opacity=".4"/>
+    <circle cx="80" cy="68" r="12" fill="none" stroke="${c.cbf}" stroke-width="1.2"/>
+    <text x="80" y="73" text-anchor="middle" font-family="Bebas Neue,sans-serif" font-size="9" fill="${c.cbf}" letter-spacing="1">CBF</text>
+  </svg>`;
+}
+
+function prodImg(p, size=120) {
+  return p.foto
+    ? `<img src="${p.foto}" style="width:${size}px;height:${size}px;object-fit:cover;border-radius:2px;">`
+    : jerseyPath(p.cor, size);
+}
+
+// ============================================================
+// RENDER PRODUTOS
+// ============================================================
+function renderProducts() {
+  const grid = document.getElementById('productsGrid');
+  if (!grid) return;
+  const filtered = currentFilter==='todos' ? products : products.filter(p=>p.categoria===currentFilter);
+  if (!filtered.length) {
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)">Nenhum produto nesta categoria.</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(p => {
+    const bg = p.foto ? '#F5F0E8' : (JERSEY_COLORS[p.cor]?.bg||'#F5F0E8');
+    return `<div class="prod-card" data-cat="${p.categoria}">
+      ${p.badge?`<div class="prod-card-badge">${p.badge}</div>`:''}
+      <div class="prod-card-img" style="background:${bg};position:relative;">
+        ${p.foto?`<img src="${p.foto}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">`:jerseyPath(p.cor,120)}
+        <div class="prod-card-overlay">
+          <button class="prod-overlay-btn" onclick="openSizeModal('${p.id}')">Montar grade</button>
+          ${p.revenda?`<div style="color:var(--gold);font-size:11px;letter-spacing:2px">${Math.round(((p.revenda-p.price)/p.price)*100)}% margem</div>`:''}
+        </div>
+      </div>
+      <div class="prod-card-info">
+        <div class="prod-card-name">${p.name}</div>
+        <div class="prod-card-desc">${(p.tamanhos||'P,M,G,GG,XGG').replace(/,/g,' · ')} · Mín. ${p.minimo||10} un</div>
+        <div class="prod-card-row"><div class="prod-card-price">R$${p.price}</div><div class="prod-card-tag">por unidade</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCarousel() {
+  const track = document.getElementById('carouselTrack');
+  if (!track || !products.length) return;
+  const all = [...products, ...products];
+  track.innerHTML = all.map((p,i) => `
+    <div class="jersey-card jc-${(i%6)+1}" style="background:${p.foto?'#111':JERSEY_COLORS[p.cor]?.bg||'#0D1B0F'}" onclick="openSizeModal('${p.id}')">
+      <div class="jersey-shine"></div>
+      ${p.badge?`<div class="jersey-badge">${p.badge}</div>`:''}
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+        ${p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;opacity:.8;">`:jerseyPath(p.cor,160)}
+      </div>
+      <div class="jersey-overlay">
+        <div class="jersey-overlay-inner">
+          <div class="jersey-overlay-name">${p.cor.toUpperCase()}</div>
+          <div class="jersey-overlay-sub">Copa 2026 · Atacado</div>
+          <button class="jersey-overlay-btn">Montar grade</button>
+        </div>
+      </div>
+      <div class="jersey-bottom">
+        <div class="jersey-bottom-name">${p.cor.toUpperCase()}</div>
+        <div class="jersey-bottom-row"><div class="jersey-bottom-price">R$${p.price}</div><div class="jersey-bottom-tag">atacado</div></div>
+      </div>
+    </div>`).join('');
+}
+
+function filterProducts(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts();
+}
+
+// ============================================================
+// MODAL TAMANHOS
+// ============================================================
+function openSizeModal(id) {
+  const p = products.find(x=>x.id===id);
+  if (!p) return;
+  currentSizeProductId = id;
+  const sizes = (p.tamanhos||'P,M,G,GG,XGG').split(',').map(s=>s.trim()).filter(Boolean);
+  const nm = document.getElementById('sizeProductNameModal');
+  const np = document.getElementById('sizeProductNamePreview');
+  const pp = document.getElementById('sizeProductPrice');
+  const imgEl = document.getElementById('sizeProductImg');
+  const ov = document.getElementById('sizeOverlay');
+  if (!ov) return;
+  if (nm) nm.textContent = p.name;
+  if (np) np.textContent = p.name;
+  if (pp) pp.textContent = `R$${p.price}/un · Mín. ${p.minimo||10} peças`;
+  if (imgEl) {
+    imgEl.style.background = p.foto ? '#F5F0E8' : (JERSEY_COLORS[p.cor]?.bg||'#F5F0E8');
+    imgEl.innerHTML = prodImg(p,52);
+  }
+  const existing = cart.find(x=>x.id===id);
+  const saved = existing?.sizes||{};
+  const wrap = document.getElementById('sizeInputsWrap');
+  if (wrap) {
+    wrap.innerHTML = sizes.map(s=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border:1px solid #e0e0e0;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#0D1B0F;letter-spacing:3px;min-width:52px;">${s}</div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <button onclick="chSQ('${s}',-1)" style="width:34px;height:34px;border:1px solid #e0e0e0;background:none;font-size:20px;cursor:pointer;">−</button>
+          <span id="sizeQty_${s}" style="font-size:16px;font-weight:500;min-width:32px;text-align:center;">${saved[s]||0}</span>
+          <button onclick="chSQ('${s}',1)" style="width:34px;height:34px;border:1px solid #e0e0e0;background:none;font-size:20px;cursor:pointer;">+</button>
+        </div>
+      </div>`).join('');
+  }
+  updateSizeTotal();
+  ov.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function chSQ(size, delta) {
+  const el = document.getElementById(`sizeQty_${size}`);
+  if (el) el.textContent = Math.max(0, parseInt(el.textContent||0)+delta);
+  updateSizeTotal();
+}
+
+function updateSizeTotal() {
+  const p = products.find(x=>x.id===currentSizeProductId);
+  if (!p) return;
+  const sizes = (p.tamanhos||'P,M,G,GG,XGG').split(',').map(s=>s.trim()).filter(Boolean);
+  let total = 0;
+  sizes.forEach(s=>{ total += parseInt(document.getElementById(`sizeQty_${s}`)?.textContent||0); });
+  const tq = document.getElementById('sizeTotalQty');
+  const tv = document.getElementById('sizeTotalValue');
+  const wn = document.getElementById('sizeMinWarning');
+  const cb = document.getElementById('confirmSizeBtn');
+  if (tq) tq.textContent = `${total} peças`;
+  if (tv) tv.textContent = `R$${(total*p.price).toLocaleString('pt-BR')}`;
+  const min = p.minimo||10;
+  if (wn) { wn.style.display=(total>0&&total<min)?'block':'none'; wn.textContent=`Mínimo de ${min} peças — faltam ${min-total}`; }
+  if (cb) cb.disabled = total < min;
+}
+
+function confirmSizeAdd() {
+  const p = products.find(x=>x.id===currentSizeProductId);
+  if (!p) return;
+  const sizes = (p.tamanhos||'P,M,G,GG,XGG').split(',').map(s=>s.trim()).filter(Boolean);
+  const sizeMap = {}; let total = 0;
+  sizes.forEach(s=>{ const q=parseInt(document.getElementById(`sizeQty_${s}`)?.textContent||0); if(q>0)sizeMap[s]=q; total+=q; });
+  if (total < (p.minimo||10)) return;
+  const ex = cart.find(x=>x.id===currentSizeProductId);
+  if (ex) { ex.qty=total; ex.sizes=sizeMap; }
+  else { cart.push({ id:currentSizeProductId, qty:total, sizes:sizeMap }); }
+  saveCart(); renderCart(); updateCartCount();
+  closeSizeModal();
+  showToast(`${p.name} adicionada à grade!`);
+  openCart();
+}
+
+function closeSizeModal() {
+  const el = document.getElementById('sizeOverlay');
+  if (el) el.style.display = 'none';
+  document.body.style.overflow = '';
+  currentSizeProductId = null;
+}
+
+// ============================================================
+// CART
+// ============================================================
+function addToCart(id) { openSizeModal(id); }
+
+function renderCart() {
+  const body    = document.getElementById('cartBody');
+  const totalEl = document.getElementById('cartTotal');
+  const minEl   = document.getElementById('cartMinimum');
+  const checkBtn= document.getElementById('checkoutBtn');
+  if (!body) return;
+  if (!cart.length) {
+    body.innerHTML=`<div class="cart-empty"><div class="cart-empty-icon">📦</div><div class="cart-empty-text">Seu carrinho está vazio.<br>Adicione produtos do catálogo.</div></div>`;
+    if (totalEl) totalEl.textContent='R$0';
+    if (minEl) minEl.classList.remove('show');
+    if (checkBtn) checkBtn.disabled=true;
+    return;
+  }
+  let total = 0;
+  body.innerHTML = cart.map(item => {
+    const p = products.find(x=>x.id===item.id);
+    if (!p) return '';
+    const sub = p.price * item.qty; total += sub;
+    const sizesHtml = item.sizes ? Object.entries(item.sizes).map(([s,q])=>`<span style="background:#F5F0E8;padding:2px 8px;font-size:11px;margin-right:4px;border-radius:2px;">${s}:${q}</span>`).join('') : '';
+    const imgBg = p.foto ? 'background:#F5F0E8' : `background:${JERSEY_COLORS[p.cor]?.bg||'#F5F0E8'}`;
+    return `<div class="cart-item">
+      <div class="cart-item-img" style="${imgBg}">${prodImg(p,52)}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${p.name}</div>
+        <div class="cart-item-price">R$${p.price}/un · Total R$${sub.toLocaleString('pt-BR')}</div>
+        ${sizesHtml?`<div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:3px;">${sizesHtml}</div>`:''}
+        <div class="cart-item-qty" style="margin-top:8px;">
+          <button class="qty-btn" onclick="openSizeModal('${item.id}')" style="padding:4px 10px;font-size:11px;">✏️ Editar</button>
+          <span class="qty-num">${item.qty} un</span>
+        </div>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart('${item.id}')">✕</button>
+    </div>`;
+  }).join('');
+  if (totalEl) totalEl.textContent = `R$${total.toLocaleString('pt-BR')}`;
+  const minOk = total >= config.minOrder;
+  if (minEl) { minEl.classList.toggle('show',!minOk); if(!minOk) minEl.textContent=`Mínimo R$${config.minOrder} — faltam R$${(config.minOrder-total).toLocaleString('pt-BR')}`; }
+  if (checkBtn) checkBtn.disabled = !minOk;
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(x=>x.id!==id);
+  saveCart(); renderCart(); updateCartCount();
+}
+
+function updateCartCount() {
+  const el = document.getElementById('cartCount');
+  if (el) el.textContent = cart.reduce((a,b)=>a+b.qty,0);
+}
+
+function goCheckout() {
+  if (config.checkout) window.location.href = config.checkout;
+  else showToast('Configure a URL de checkout no painel admin!');
+}
+
+function openCart()  {
+  const d=document.getElementById('cartDrawer'),o=document.getElementById('cartOverlay');
+  if(d)d.classList.add('open');if(o)o.classList.add('open');renderCart();
+}
+function closeCart() {
+  const d=document.getElementById('cartDrawer'),o=document.getElementById('cartOverlay');
+  if(d)d.classList.remove('open');if(o)o.classList.remove('open');
+}
+
+// ============================================================
+// LOGIN ADMIN — 5 cliques no logo
+// ============================================================
+let _lcc=0, _lct=null;
+document.addEventListener('DOMContentLoaded', function() {
+  const logo = document.getElementById('navLogo');
+  if (logo) {
+    logo.addEventListener('click', function() {
+      _lcc++; clearTimeout(_lct);
+      _lct = setTimeout(()=>_lcc=0, 1500);
+      if (_lcc >= 5) { _lcc=0; openLogin(); }
+    });
+  }
+});
+
+function openLogin() {
+  const el = document.getElementById('loginOverlay');
+  if (!el) return;
+  el.style.display = 'flex';
+  const em=document.getElementById('loginEmail'), ps=document.getElementById('loginPass'), er=document.getElementById('loginError');
+  if(em)em.value=''; if(ps)ps.value=''; if(er)er.style.display='none';
+  setTimeout(()=>{ const e=document.getElementById('loginEmail'); if(e)e.focus(); },100);
+}
+function closeLogin() {
+  const el=document.getElementById('loginOverlay'); if(el)el.style.display='none';
+}
+function toggleLoginPass() {
+  const i=document.getElementById('loginPass');
+  if(i)i.type=i.type==='password'?'text':'password';
+}
+function doLogin() {
+  const e=(document.getElementById('loginEmail')||{}).value||'';
+  const p=(document.getElementById('loginPass')||{}).value||'';
+  const err=document.getElementById('loginError');
+  if(e.trim()===ADMIN_EMAIL && p===ADMIN_PASS) {
+    adminLoggedIn=true; closeLogin(); openAdmin();
+  } else {
+    if(err)err.style.display='block';
+    const ps=document.getElementById('loginPass');
+    if(ps){ps.value='';ps.focus();}
+  }
+}
+
+// ============================================================
+// ADMIN PANEL
+// ============================================================
+function openAdmin() {
+  if (!adminLoggedIn) { openLogin(); return; }
+  const panel=document.getElementById('adminPanel'), ov=document.getElementById('adminOverlay');
+  if(panel)panel.classList.add('open'); if(ov)ov.classList.add('open');
+  renderAdminList(); loadConfig();
+}
+function closeAdmin() {
+  const panel=document.getElementById('adminPanel'), ov=document.getElementById('adminOverlay');
+  if(panel)panel.classList.remove('open'); if(ov)ov.classList.remove('open');
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.admin-tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+  const tab=document.getElementById('tab-'+name);
+  if(tab)tab.classList.add('active'); if(btn)btn.classList.add('active');
+  if(name==='produtos') renderAdminList();
+}
+
+function renderAdminList() {
+  const countEl=document.getElementById('adminProdCount');
+  const listEl=document.getElementById('adminProdList');
+  if(!listEl)return;
+  if(countEl)countEl.textContent=`${products.length} produto(s) cadastrado(s)`;
+  listEl.innerHTML = products.map(p=>`
+    <div class="admin-prod-item">
+      <div class="admin-prod-thumb" style="${p.foto?'background:#F5F0E8':'background:'+(JERSEY_COLORS[p.cor]?.bg||'#F5F0E8')}">${prodImg(p,44)}</div>
+      <div class="admin-prod-info">
+        <div class="admin-prod-name">${p.name}</div>
+        <div class="admin-prod-meta">${p.categoria} · ${p.tamanhos||'P-XGG'} · Mín.${p.minimo||10}un · Estoque:${p.estoque||'—'}</div>
+      </div>
+      <div class="admin-prod-price">R$${p.price}</div>
+      <div class="admin-prod-actions">
+        <button class="btn-edit" onclick="editProduct('${p.id}')">Editar</button>
+        <button class="btn-edit" style="background:#1C3A20;" onclick="openPhotoModal('${p.id}')">📷 Foto</button>
+        <button class="btn-delete" onclick="deleteProduct('${p.id}')">Excluir</button>
+      </div>
+    </div>`).join('');
+}
+
+function editProduct(id) {
+  const p = products.find(x=>x.id===id); if(!p)return;
+  document.getElementById('formTitle').textContent='Editar Produto';
+  document.getElementById('editingId').value=id;
+  document.getElementById('fName').value=p.name;
+  document.getElementById('fPrice').value=p.price;
+  document.getElementById('fRevenda').value=p.revenda||'';
+  document.getElementById('fCategoria').value=p.categoria;
+  document.getElementById('fCor').value=p.cor;
+  document.getElementById('fMinimo').value=p.minimo||10;
+  document.getElementById('fTamanhos').value=p.tamanhos||'';
+  document.getElementById('fDesc').value=p.desc||'';
+  document.getElementById('fBadge').value=p.badge||'';
+  document.getElementById('fEstoque').value=p.estoque||'';
+  currentFormPhotoData = p.foto||null;
+  const prev=document.getElementById('fPhotoPreview');
+  if(prev)prev.innerHTML=p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;">`:`<span style="font-size:12px;color:#aaa;letter-spacing:1px;">Clique para adicionar foto</span>`;
+  switchTab('novo', document.querySelectorAll('.admin-tab')[1]);
+}
+
+async function deleteProduct(id) {
+  if (!confirm('Excluir este produto?')) return;
+  try {
+    await apiDelete(`/products/${id}`);
+    cart = cart.filter(x=>x.id!==id);
+    saveCart();
+    await loadAll();
+    renderAdminList();
+    showToast('Produto excluído.');
+  } catch(e) { showToast('Erro ao excluir: '+e.message); }
+}
+
+async function saveProduct() {
+  const id    = document.getElementById('editingId').value;
+  const name  = document.getElementById('fName').value.trim();
+  const price = parseFloat(document.getElementById('fPrice').value);
+  if (!name||!price) { showToast('Preencha nome e preço!'); return; }
+  const data = {
+    name, price,
+    revenda:   parseFloat(document.getElementById('fRevenda').value)||0,
+    categoria: document.getElementById('fCategoria').value,
+    cor:       document.getElementById('fCor').value,
+    minimo:    parseInt(document.getElementById('fMinimo').value)||10,
+    tamanhos:  document.getElementById('fTamanhos').value||'P,M,G,GG,XGG',
+    desc:      document.getElementById('fDesc').value,
+    badge:     document.getElementById('fBadge').value,
+    estoque:   parseInt(document.getElementById('fEstoque').value)||0,
+    foto:      currentFormPhotoData||'',
+  };
+  try {
+    if (id) { await apiPut(`/products/${id}`, data); }
+    else {
+      data.id = name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'-'+Date.now();
+      await apiPost('/products', data);
+    }
+    await loadAll();
+    renderAdminList();
+    cancelEdit();
+    showToast(id?'Produto atualizado!':'Produto criado!');
+    switchTab('produtos', document.querySelectorAll('.admin-tab')[0]);
+  } catch(e) { showToast('Erro ao salvar: '+e.message); }
+}
+
+function cancelEdit() {
+  const ft=document.getElementById('formTitle'); if(ft)ft.textContent='Novo Produto';
+  const ei=document.getElementById('editingId'); if(ei)ei.value='';
+  ['fName','fPrice','fRevenda','fMinimo','fTamanhos','fDesc','fBadge','fEstoque'].forEach(id=>{ const el=document.getElementById(id); if(el)el.value=''; });
+  const fc=document.getElementById('fCategoria'); if(fc)fc.value='titular';
+  const fo=document.getElementById('fCor'); if(fo)fo.value='amarela';
+  currentFormPhotoData=null;
+  const prev=document.getElementById('fPhotoPreview');
+  if(prev)prev.innerHTML=`<span style="font-size:12px;color:#aaa;letter-spacing:1px;">Clique para adicionar foto</span>`;
+}
+
+function previewFormPhoto(input) {
+  const file=input.files[0]; if(!file)return;
+  if(file.size>5*1024*1024){showToast('Foto muito grande. Máximo 5MB.');return;}
+  const r=new FileReader();
+  r.onload=e=>{ currentFormPhotoData=e.target.result; const p=document.getElementById('fPhotoPreview'); if(p)p.innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`; };
+  r.readAsDataURL(file);
+}
+function clearFormPhoto() {
+  currentFormPhotoData=null;
+  const p=document.getElementById('fPhotoPreview');
+  if(p)p.innerHTML=`<span style="font-size:12px;color:#aaa;letter-spacing:1px;">Clique para adicionar foto</span>`;
+  const i=document.getElementById('fPhotoInput'); if(i)i.value='';
+}
+
+function openPhotoModal(id) {
+  const p=products.find(x=>x.id===id); if(!p)return;
+  currentPhotoId=id; currentPhotoData=p.foto||null;
+  const nm=document.getElementById('photoProductName');
+  const wrap=document.getElementById('photoPreviewWrap');
+  const sb=document.getElementById('savePhotoBtn');
+  const ov=document.getElementById('photoOverlay');
+  if(!ov)return;
+  if(nm)nm.textContent=p.name;
+  if(wrap)wrap.innerHTML=p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;">`:`<div style="display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none"><div style="font-size:40px">📷</div><div style="font-size:13px;color:#aaa;text-align:center">Clique para selecionar<br><span style="font-size:11px">JPG, PNG — máx. 5MB</span></div></div>`;
+  if(sb)sb.disabled=!p.foto;
+  ov.style.display='flex';
+}
+function closePhotoModal() {
+  const el=document.getElementById('photoOverlay'); if(el)el.style.display='none';
+  currentPhotoId=null; currentPhotoData=null;
+}
+function previewPhoto(input) {
+  const file=input.files[0]; if(!file)return;
+  if(file.size>5*1024*1024){showToast('Foto muito grande. Máximo 5MB.');return;}
+  const r=new FileReader();
+  r.onload=e=>{
+    currentPhotoData=e.target.result;
+    const wrap=document.getElementById('photoPreviewWrap');
+    if(wrap)wrap.innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+    const sb=document.getElementById('savePhotoBtn'); if(sb)sb.disabled=false;
+  };
+  r.readAsDataURL(file);
+}
+async function savePhoto() {
+  if(!currentPhotoId)return;
+  try {
+    await apiPut(`/products/${currentPhotoId}/foto`, { foto:currentPhotoData||'' });
+    await loadAll(); renderAdminList();
+    closePhotoModal(); showToast('Foto salva!');
+  } catch(e) { showToast('Erro ao salvar foto: '+e.message); }
+}
+async function removePhoto() {
+  if(!currentPhotoId)return;
+  try {
+    await apiPut(`/products/${currentPhotoId}/foto`, { foto:'' });
+    await loadAll(); renderAdminList();
+    closePhotoModal(); showToast('Foto removida.');
+  } catch(e) { showToast('Erro: '+e.message); }
+}
+
+function loadConfig() {
+  const mo=document.getElementById('cfgMinOrder');
+  const co=document.getElementById('cfgCheckout');
+  const wh=document.getElementById('cfgWhatsapp');
+  const em=document.getElementById('cfgEmail');
+  if(mo)mo.value=config.minOrder||600;
+  if(co)co.value=config.checkout||'';
+  if(wh)wh.value=config.whatsapp||'';
+  if(em)em.value=config.email||'';
+}
+async function saveConfig() {
+  const newConfig = {
+    minOrder: parseInt(document.getElementById('cfgMinOrder').value)||600,
+    checkout: document.getElementById('cfgCheckout').value.trim(),
+    whatsapp: document.getElementById('cfgWhatsapp').value.trim(),
+    email:    document.getElementById('cfgEmail').value.trim(),
+  };
+  try {
+    config = await apiPut('/config', newConfig);
+    renderCart();
+    showToast('Configurações salvas!');
+  } catch(e) { showToast('Erro ao salvar: '+e.message); }
+}
+
+function exportData() {
+  const blob=new Blob([JSON.stringify({products,config,cart},null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='manto-dados.json'; a.click();
+}
+async function resetData() {
+  if(!confirm('Apagar todos os produtos do banco? Isso não pode ser desfeito.'))return;
+  try {
+    for(const p of products) await apiDelete(`/products/${p.id}`);
+    cart=[]; saveCart();
+    await loadAll(); renderAdminList(); updateCartCount(); loadConfig();
+    showToast('Dados resetados.');
+  } catch(e) { showToast('Erro: '+e.message); }
+}
+
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  if(!t)return;
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadAll();
+});
+
+document.addEventListener('keydown', e=>{
+  if(e.key!=='Escape')return;
+  closeCart(); closeAdmin(); closeSizeModal(); closePhotoModal(); closeLogin();
+});
+</script>
+</body>
+</html>
